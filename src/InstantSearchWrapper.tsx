@@ -11,7 +11,8 @@ import { SearchClient } from 'algoliasearch';
 import Pagination, { PagerClassNames } from './components/hits/Pagination';
 import SortBy, { SortBySettingProps } from './components/SortBy';
 import { AttributesMobile, AttributesDesktop } from './components/attributes/';
-import { useRouter } from './hooks/useRouting';
+import { history } from 'instantsearch.js/es/lib/routers';
+import {type UiState} from "instantsearch.js";
 
 export enum RefinementTypeEnum {
     List = 'List',
@@ -74,7 +75,20 @@ const InstantSearchWrapper = ({
                 indexName={indexName}
                 searchClient={searchClient}
                 //@ts-ignore
-                routing={useRouter(indexName)}
+                routing={{
+                    router: history(),
+                    stateMapping: {
+                        stateToRoute(uiState: UiState) {
+                            const indexUiState = uiState[indexName];
+                            return {... indexUiState.refinementList, page: indexUiState.page}
+                        },
+                        routeToState(routeState: UiState) {
+                            return {
+                                [indexName]: {refinementList: {... routeState}, page: routeState.page }
+                            };
+                        }
+                    }
+                }}
             >
                
                 <Configure //@ts-ignore 

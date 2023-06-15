@@ -15,14 +15,9 @@ export default [
         input: 'src/index.ts',
         output: [
             {
-                file: packageJson.main,
-                format: 'cjs',
-                sourcemap: true
-            },
-            {
                 file: packageJson.module,
                 format: 'esm',
-                sourcemap: true
+                sourcemap: false
             }
         ],
         external: Object.keys(packageJson.dependencies),
@@ -30,7 +25,6 @@ export default [
             renameNodeModules("ext", false),
             // Delete lib folder.
             del({ targets: 'dist/*' }),
-
 
             // This plugin avoids us from bundling the peerDependencies. (React)
             peerDepsExternal(),

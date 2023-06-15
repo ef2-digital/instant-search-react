@@ -11,22 +11,6 @@ import * as Checkbox from '@radix-ui/react-checkbox';
 import * as CollapsiblePrimitive from '@radix-ui/react-collapsible';
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 
-var Hit = function (_a) {
-    var hit = _a.hit;
-    if (!hit) {
-        return jsx(Fragment, {});
-    }
-    return jsx("div", { children: "Hit" });
-};
-
-var Hits = function (_a) {
-    var renderHit = _a.renderHit, hitsClassNames = _a.hitsClassNames;
-    var hits = useHits().hits;
-    return (jsx("div", { className: classNames(hitsClassNames === null || hitsClassNames === void 0 ? void 0 : hitsClassNames.grid, 'grid grid-cols-1 gap-8'), children: hits.map(function (hit) {
-            return renderHit ? jsxs(Fragment$1, { children: [" ", renderHit({ hit: hit })] }, "".concat(hit.objectID, "-").concat(hit.id)) : jsx(Hit, { hit: hit });
-        }) }));
-};
-
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -76,6 +60,22 @@ function __spreadArray(to, from, pack) {
     }
     return to.concat(ar || Array.prototype.slice.call(from));
 }
+
+var Hit = function (_a) {
+    var hit = _a.hit;
+    if (!hit) {
+        return jsx(Fragment, {});
+    }
+    return jsx("div", { children: "Hit" });
+};
+
+var Hits = function (_a) {
+    var renderHit = _a.renderHit, hitsClassNames = _a.hitsClassNames;
+    var hits = useHits().hits;
+    return (jsx("div", { className: classNames(hitsClassNames === null || hitsClassNames === void 0 ? void 0 : hitsClassNames.grid, 'grid grid-cols-1 gap-8'), children: hits.map(function (hit) {
+            return renderHit ? jsxs(Fragment$1, { children: [" ", renderHit({ hit: hit })] }, "".concat(hit.objectID, "-").concat(hit.id)) : jsx(Hit, { hit: hit });
+        }) }));
+};
 
 var DOTS = '...';
 var range = function (start, end) {
@@ -1666,24 +1666,6 @@ function historyRouter() {
   });
 }
 
-var useRouter = function (indexName) {
-    return {
-        router: historyRouter(),
-        stateMapping: {
-            stateToRoute: function (uiState) {
-                var indexUiState = uiState[indexName];
-                return __assign(__assign({}, indexUiState.refinementList), { page: indexUiState.page });
-            },
-            routeToState: function (routeState) {
-                var _a;
-                return _a = {},
-                    _a[indexName] = { refinementList: __assign({}, routeState), page: routeState.page },
-                    _a;
-            }
-        }
-    };
-};
-
 var RefinementTypeEnum;
 (function (RefinementTypeEnum) {
     RefinementTypeEnum["List"] = "List";
@@ -1695,9 +1677,22 @@ var InstantSearchWrapper = function (_a) {
     var ref = useRef(null);
     return (jsx("div", { className: classNames(classNamesList === null || classNamesList === void 0 ? void 0 : classNamesList.wrapper, 'grid grid-cols-1 gap-x-12 gap-y-10 md:grid-cols-4'), children: jsxs(InstantSearch, { indexName: indexName, searchClient: searchClient, 
             //@ts-ignore
-            routing: useRouter(indexName), children: [jsx(Configure //@ts-ignore 
+            routing: {
+                router: historyRouter(),
+                stateMapping: {
+                    stateToRoute: function (uiState) {
+                        var indexUiState = uiState[indexName];
+                        return __assign(__assign({}, indexUiState.refinementList), { page: indexUiState.page });
+                    },
+                    routeToState: function (routeState) {
+                        var _a;
+                        return _a = {},
+                            _a[indexName] = { refinementList: __assign({}, routeState), page: routeState.page },
+                            _a;
+                    }
+                }
+            }, children: [jsx(Configure //@ts-ignore 
                 , { hitsPerPage: hitsPerPage !== null && hitsPerPage !== void 0 ? hitsPerPage : 20 }), filterableAttributes && (jsx(AttributesDesktop, { className: classNamesList === null || classNamesList === void 0 ? void 0 : classNamesList.refinementsWrapper, attributes: filterableAttributes, renderTitle: renderContent === null || renderContent === void 0 ? void 0 : renderContent.renderRefinementsContent, clearFilterLabel: messages && messages.clearFilters })), jsxs("div", { className: classNames((_b = classNamesList === null || classNamesList === void 0 ? void 0 : classNamesList.hits) === null || _b === void 0 ? void 0 : _b.wrapper, 'md:col-span-3'), ref: ref, children: [renderContent === null || renderContent === void 0 ? void 0 : renderContent.renderHitsContent, jsxs("div", { className: "flex items-center mt-4", children: [filterableAttributes && (jsx(AttributesMobile, { attributes: filterableAttributes, renderTitle: renderContent === null || renderContent === void 0 ? void 0 : renderContent.renderRefinementsContent, clearFilterLabel: messages && messages.clearFilters })), sortableAttributes && jsx(SortBy, { items: sortableAttributes.items, settings: sortableAttributes.settings })] }), jsx(Hits, { renderHit: renderHit, hitsClassNames: classNamesList === null || classNamesList === void 0 ? void 0 : classNamesList.hits }), jsx(Pagination, { ref: ref, hitsPerPage: hitsPerPage, classNames: classNamesList === null || classNamesList === void 0 ? void 0 : classNamesList.pager })] })] }) }));
 };
 
 export { RefinementTypeEnum, InstantSearchWrapper as default };
-//# sourceMappingURL=index.mjs.map
